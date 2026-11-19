@@ -13,7 +13,7 @@
 - **项目地址**：[GitHub - limingkang12345/CalculusCalculator](https://github.com/limingkang12345/CalculusCalculator)
 - **项目文档**: [CalculusCalculator帮助文档](https://limingkang12345.github.io/CalculusCalculator/)
 - **网页版**：[https://limingkang.pythonanywhere.com](https://limingkang.pythonanywhere.com)
-- **最新版本**：v2.1.0
+- **最新版本**：v2.1.2
 - **开发语言**：Python 3.10+
 - **核心库**：SymPy（符号计算）、PySide6（GUI 框架）、Matplotlib（几何绘图）、Blockly（可视化编程）
 - **功能概览**：

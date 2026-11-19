@@ -17,8 +17,9 @@ _current = "zh_CN"
 # 当前主题：'light' / 'dark'，默认浅色
 _theme = "light"
 
-# 应用版本号（单源）。首次运行时也会写入设置文件，便于检查更新与排查问题。
-APP_VERSION = "2.1.0"
+# 应用版本号（单源）。来自 core/_version.py，与 setup.py 和 git 标签保持一致，
+# 避免此前“代码报告 2.1.0 而实际为 2.1.2”的版本漂移。
+from core._version import __version__ as APP_VERSION
 
 
 def _qm_dir():

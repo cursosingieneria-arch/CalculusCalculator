@@ -83,8 +83,9 @@ includes = (
     + collect_modules("math_input")
 )
 
-# 版本号与 core/settings.py 的 APP_VERSION 同源，避免两处不一致
-APP_VERSION = "2.1.0"
+# 版本号与 core/settings.py 同源：ambos leen core/_version.py (sin dependencias
+# de Qt), de modo que no puede volver a divergir.
+from core._version import __version__ as APP_VERSION
 
 # SETUP CX FREEZE
 setup(
