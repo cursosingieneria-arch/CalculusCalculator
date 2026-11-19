@@ -65,6 +65,12 @@ CALC_ENGINE_NAMES = [
     "Python内置引擎", "Mpmath高精度引擎", "Sympy符号引擎", "Latex代码生成引擎"
 ]
 
+# Límite de dígitos para convertir enteros grandes a texto. Antes se desactivaba
+# por completo (set_int_max_str_digits(0)), lo que reabre el DoS que esa
+# protección de Python previene. Un tope generoso permite resultados muy grandes
+# sin dejar el proceso indefenso ante conversiones patológicas.
+_MAX_INT_STR_DIGITS = 1_000_000
+
 TRANSFORM_NAMES = [
     "通用化简(simplify)", "展开(expand)", "因式分解(factor)", "主元(collect)",
     "通分(cancel)", "分离(apart)", "三角变换(trigsimp)", "三角展开(expand_trig)",
@@ -1749,22 +1755,36 @@ class Functions(QWidget, Ui_functions):
         engine, expr = inputs[0], inputs[1]
 
         if engine == CALC_ENGINE_NAMES[0]:
+            # Motor «Python内置»: evaluación numérica SIN ejecutar código Python
+            # arbitrario (hallazgo S2). safe_eval solo admite números, operadores
+            # y un catálogo de funciones matemáticas seguras.
             import sys
-            sys.set_int_max_str_digits(0)
-            return eval(expr), False, None
+            from core.safe_eval import safe_eval, PY_ENGINE_NAMES
+            sys.set_int_max_str_digits(_MAX_INT_STR_DIGITS)
+            return safe_eval(expr, PY_ENGINE_NAMES), False, None
 
         if engine == CALC_ENGINE_NAMES[1]:
             import mpmath as mp
             from mpmath import (sin, cos, tan, cot, sec, csc, sinh, cosh, tanh, coth,
                                 sech, csch, exp, log, ln, sqrt, root, pi, e, phi)
+            from core.safe_eval import safe_eval
+            # Tabla de nombres permitidos para el motor Mpmath (mismas funciones
+            # que antes, pero sin eval: no se puede ejecutar código arbitrario).
+            mp_names = {
+                "mp": mp, "sin": sin, "cos": cos, "tan": tan, "cot": cot,
+                "sec": sec, "csc": csc, "sinh": sinh, "cosh": cosh, "tanh": tanh,
+                "coth": coth, "sech": sech, "csch": csch, "exp": exp, "log": log,
+                "ln": ln, "sqrt": sqrt, "root": root, "pi": pi, "e": e, "phi": phi,
+                "mpf": mp.mpf, "mpc": mp.mpc, "fabs": mp.fabs, "power": mp.power,
+            }
             with mp.workdps(int_value(inputs[2], 16)):
-                result = eval(expr)
+                result = safe_eval(expr, mp_names)
                 text = str(result)
             return result, False, text
 
         if engine == CALC_ENGINE_NAMES[2]:
             import sys
-            sys.set_int_max_str_digits(0)
+            sys.set_int_max_str_digits(_MAX_INT_STR_DIGITS)
             return radsimp(sympify(expr, self.fs, is_simplify = True)), False, None
 
         code = latex(sympify(expr, fs = {}))

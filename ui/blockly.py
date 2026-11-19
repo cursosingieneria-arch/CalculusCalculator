@@ -11,6 +11,30 @@ from PySide6.QtWidgets import (QApplication, QDialog, QDialogButtonBox,
 from ui.ui_blockly import Ui_blockly
 
 
+def _safe_builtins():
+    """Subconjunto seguro de built-ins para el editor de bloques (hallazgo S3).
+
+    Omite deliberadamente las primitivas de ejecución/E-S (``__import__``,
+    ``open``, ``eval``, ``exec``, ``compile``, ``input``, ``getattr``…), de modo
+    que el código generado por los bloques no pueda ejecutar comandos del sistema
+    ni importar módulos arbitrarios, conservando lo necesario para programas de
+    cálculo (bucles, listas, aritmética, impresión de resultados).
+    """
+    import builtins
+    allowed = [
+        "abs", "all", "any", "bool", "complex", "dict", "divmod", "enumerate",
+        "filter", "float", "format", "frozenset", "int", "len", "list", "map",
+        "max", "min", "next", "pow", "print", "range", "repr", "reversed",
+        "round", "set", "slice", "sorted", "str", "sum", "tuple", "zip",
+        "True", "False", "None", "isinstance", "issubclass",
+    ]
+    safe = {name: getattr(builtins, name) for name in allowed if hasattr(builtins, name)}
+    return safe
+
+
+_SAFE_BUILTINS = _safe_builtins()
+
+
 class PythonBridge(QObject):
     """在 Python 与页面 JavaScript 之间桥接代码执行、输入读取与结果回传。"""
 
@@ -324,6 +348,8 @@ class PythonBridge(QObject):
     @Slot(str)
     def executePython(self, code):
         env = {
+            # Built-ins restringidos: sin __import__/open/eval/exec/… (hallazgo S3).
+            '__builtins__': _SAFE_BUILTINS,
             'fs': self.fs,
             'get_input': self.get_input,
             'py_output': self.py_output,
