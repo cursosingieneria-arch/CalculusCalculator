@@ -1,7 +1,9 @@
 from PySide6.QtWidgets import QFileDialog, QLineEdit, QMessageBox, QGraphicsView, QComboBox
 from PySide6.QtCore import Qt
 from sympy import latex
-from core.sympify import sympify
+# Carga segura: reconstruye expresiones del archivo SIN evaluar código Python
+# (cierra el hallazgo S1: RCE al abrir un .cca/.json de un tercero).
+from core.safe_parse import safe_sympify_savefile as _load_expr, UnsafeExpressionError
 from core.render import setGraphicsView, _svg_cache
 import ui
 import json
@@ -13,11 +15,11 @@ def _fix_old_format(obj, cat, val_str, fs):
     from sympy import Line, Circle
     if cat == "直线" and not isinstance(obj, Line):
         try:
-            obj = Line(sympify(val_str, fs))
+            obj = Line(_load_expr(val_str, fs))
         except Exception: pass
     elif cat == "圆" and not isinstance(obj, Circle):
         try:
-            obj = Circle(sympify(val_str, fs))
+            obj = Circle(_load_expr(val_str, fs))
         except Exception: pass
     return obj
 
@@ -27,11 +29,11 @@ def _fix_old_format_3d(obj, cat, val_str, fs):
     from sympy.geometry import Line3D, Plane
     if cat == "直线" and not isinstance(obj, Line3D):
         try:
-            obj = Line3D(sympify(val_str, fs))
+            obj = Line3D(_load_expr(val_str, fs))
         except Exception: pass
     elif cat == "平面" and not isinstance(obj, Plane):
         try:
-            obj = Plane(sympify(val_str, fs))
+            obj = Plane(_load_expr(val_str, fs))
         except Exception: pass
     return obj
 
@@ -157,6 +159,23 @@ def openfile(main_class):
         load_from_path(main_class, filename)
 
 
+def _load_expr_dict(keys, fs):
+    """Reconstruye {cadena: expresión} desde una lista del archivo, de forma segura.
+
+    Una entrada no analizable o insegura se omite (no se ejecuta ni aborta la carga).
+    """
+    out = {}
+    for k in keys:
+        try:
+            out[k] = _load_expr(k, fs)
+        except Exception:
+            # Entrada corrupta o maliciosa (UnsafeExpressionError / SyntaxError /
+            # error de construcción): se descarta; el objeto no se reconstruye
+            # pero el resto del archivo sigue cargándose. No se ejecuta la cadena.
+            continue
+    return out
+
+
 def load_from_path(main_class, filename):
     """从指定路径加载存档（.cca / .json，内容均为 JSON 格式）。
 
@@ -176,9 +195,9 @@ def load_from_path(main_class, filename):
                         main_class.tabs_n = tabs_n
 
                 # ---- 函数列表 ----
-                main_class.eqs = {i: sympify(i, main_class.fs) for i in json_data.get("eqs", [])}
+                main_class.eqs = _load_expr_dict(json_data.get("eqs", []), main_class.fs)
                 # ---- 方程/不等式列表 ----
-                main_class.rels = {i: sympify(i, main_class.fs) for i in json_data.get("rels", [])}
+                main_class.rels = _load_expr_dict(json_data.get("rels", []), main_class.fs)
                 # ---- 向量列表 ----
                 main_class.vs = json_data.get("vs", {})
 
@@ -192,7 +211,7 @@ def load_from_path(main_class, filename):
                     for k, v in json_data["pjs"].items():
                         cat, val_str = v[0], v[1]
                         try:
-                            obj = sympify(val_str, main_class.fs)
+                            obj = _load_expr(val_str, main_class.fs)
                         except Exception:
                             obj = None
                         if obj is not None:
@@ -205,7 +224,7 @@ def load_from_path(main_class, filename):
                     for k, v in json_data["ljs"].items():
                         cat, val_str = v[0], v[1]
                         try:
-                            obj = sympify(val_str, main_class.fs)
+                            obj = _load_expr(val_str, main_class.fs)
                         except Exception:
                             obj = None
                         if obj is not None:
@@ -236,7 +255,7 @@ def load_from_path(main_class, filename):
                                 view = tab_widget.findChild(QGraphicsView, view_name)
                                 if view is not None:
                                     try:
-                                        expr = sympify(lineedit.text(), main_class.fs)
+                                        expr = _load_expr(lineedit.text(), main_class.fs)
                                         setGraphicsView('', latex(expr), view)
                                     except:
                                         pass
