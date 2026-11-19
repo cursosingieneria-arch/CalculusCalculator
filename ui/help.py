@@ -9,11 +9,15 @@ from core.settings import current_language
 
 
 def _help_filename():
-    """根据当前界面语言返回对应的帮助文档文件名。
+    """Devuelve el nombre del archivo de ayuda segun el idioma de la interfaz.
 
-    en / en_US 等以 en 开头的语言代码使用英文版 help_en.html，其余使用中文版 help.html。
+    es / es_ES (prefijo es)  -> help_es.html (espanol)
+    en / en_US (prefijo en)  -> help_en.html (ingles)
+    cualquier otro           -> help.html    (chino, idioma base)
     """
     lang = current_language() or ""
+    if lang.lower().startswith("es"):
+        return "help_es.html"
     if lang.lower().startswith("en"):
         return "help_en.html"
     return "help.html"

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ayuda de CalculusCalculator v2.1.0</title>
+<style>
+body { font-family: "Microsoft YaHei", "SimSun", sans-serif; font-size: 14px; line-height: 1.8; margin: 50px; }
+h1 { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 5px; }
+h2 { font-size: 18px; margin-top: 25px; margin-bottom: 10px; border-left: 4px solid #0078d4; padding-left: 10px; }
+h3 { font-size: 16px; margin-top: 20px; margin-bottom: 8px; }
+p { margin: 6px 0; }
+ul, ol { margin: 6px 0; padding-left: 30px; }
+li { margin-bottom: 5px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+th, td { border: 1px solid #000; padding: 6px 10px; text-align: center; }
+th { background-color: #e8e8e8; }
+code { background-color: #f0f0f0; padding: 1px 6px; border-radius: 3px; font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+.note { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 15px; margin: 10px 0; }
+.right { text-align: right; }
+</style>
+</head>
+<body>
+
+<h1>Ayuda de CalculusCalculator v2.1.0</h1>
+<p style="text-align:center; color:#666;">Lo siguiente aplica a todos los cuadros de entrada de texto</p>
+
+<h2>0. Estructura de la interfaz y menús</h2>
+<p>Desde la v2.1.0, todas las antiguas pestañas de funciones independientes se integraron en la página <b>Todo en uno</b>, lo que simplifica mucho la interfaz. Estructura actual de la barra de menús y de las pestañas:</p>
+
+<h3>Barra de menús</h3>
+<table>
+<tr><th>Menú</th><th>Elementos</th><th>Descripción</th></tr>
+<tr><td>Archivo</td><td>Guardar como / Abrir / Caché / Configuración / Salir</td><td>guardar y cargar proyectos, gestión de la caché y configuración de la interfaz</td></tr>
+<tr><td>Funciones</td><td>Inicio / Todo en uno / Editor Blockly / Calculadora de expresiones</td><td>abrir la página de inicio, la página Todo en uno, el editor Blockly y el lienzo de expresiones</td></tr>
+<tr><td>Acerca de</td><td>Enlace a GitHub / Versión web / Guía / Ayuda</td><td>enlaces del proyecto y ayuda integrada</td></tr>
+</table>
+
+<h3>Pestañas</h3>
+<p>Existen 7 tipos de pestañas: <b>Inicio</b>, <b>Todo en uno</b>, <b>Ayuda</b>, <b>Configuración</b>, <b>Caché</b>, <b>Editor Blockly</b> y <b>Calculadora de expresiones</b>. Se pueden abrir a la vez varias pestañas del mismo tipo (los títulos se numeran automáticamente); las pestañas se pueden cerrar y reordenar arrastrándolas.</p>
+
+<h3>Página Todo en uno</h3>
+<p>La página Todo en uno es la interfaz principal para todos los tipos de cálculo, dividida de izquierda a derecha en tres áreas cuyos anchos se pueden ajustar arrastrando los separadores:</p>
+<ol>
+<li><b>Área de definición</b>: elija un tipo en el desplegable superior (<b>Función, Conjunto, Vector, Geometría plana, Geometría del espacio</b>) para definir funciones y objetos; los objetos se agrupan por tipo en la lista en árbol y se pueden leer o eliminar.</li>
+<li><b>Área de cálculo</b>: elija un tipo de cálculo en el desplegable (<b>Calcular, Derivada, Integral, Ecuación, Inecuación, Sistema de ecuaciones, Sistema de inecuaciones, Cálculo en el plano, Cálculo en el espacio, Transformar, Resolver triángulo</b>, 11 en total); las filas de entrada se adaptan al tipo seleccionado.</li>
+<li><b>Área de graficación</b>: elija un modo en el desplegable (<b>modo Geometría plana, modo Geometría del espacio, modo Función</b>), marque los objetos a dibujar y luego haga clic en <b>Graficar o Actualizar</b> para generar la imagen.</li>
+</ol>
+
+<div class="note">
+<b>Atajo Enter:</b> al presionar <b>Enter</b> en el cuadro de entrada de texto principal de cada página se activa automáticamente el botón correspondiente (por ejemplo, «Calcular» o «Guardar»), sin hacer clic manualmente.
+</div>
+
+<h2>1. Entrada directa de código LaTeX</h2>
+<p>Además de la sintaxis estándar de Python/SymPy descrita más abajo, puede <b>ingresar código LaTeX directamente</b>. Anteponga al código LaTeX un signo de dólar de ancho medio <code>$</code>; el sistema convierte automáticamente la expresión LaTeX en una expresión de SymPy.</p>
+
+<p><b>Uso:</b></p>
+<table>
+<tr><th>#</th><th>Significado</th><th>Entrada LaTeX</th><th>Entrada SymPy equivalente</th></tr>
+<tr><td>1</td><td>x dividido 2</td><td><code>$\frac{x}{2}</code></td><td><code>x/2</code></td></tr>
+<tr><td>2</td><td>x al cuadrado</td><td><code>$x^{2}</code></td><td><code>x**2</code></td></tr>
+<tr><td>3</td><td>raíz cuadrada de x</td><td><code>$\sqrt{x}</code></td><td><code>sqrt(x)</code></td></tr>
+<tr><td>4</td><td>sin(x)</td><td><code>$\sin{x}</code></td><td><code>sin(x)</code></td></tr>
+<tr><td>5</td><td>logaritmo natural ln(x)</td><td><code>$\ln{x}</code></td><td><code>log(x)</code></td></tr>
+<tr><td>6</td><td>pi π</td><td><code>$\pi</code></td><td><code>pi</code></td></tr>
+<tr><td>7</td><td>infinito ∞</td><td><code>$\infty</code></td><td><code>oo</code></td></tr>
+</table>
+
+<div class="note">
+<b>Nota:</b> el prefijo debe ser un <code>$</code> de ancho medio. Sin él, la expresión se analiza con las reglas estándar de SymPy/Python. El análisis de LaTeX admite símbolos y estructuras matemáticas comunes; las expresiones complejas pueden combinar sintaxis LaTeX y SymPy.
+</div>
+
+<h2>2. Estándar de entrada de símbolos matemáticos</h2>
+<ol>
+<li>Suma / resta / multiplicación / división: <code>+</code> <code>-</code> <code>*</code> <code>/</code></li>
+<li>Potencia: <code>**</code> (por ejemplo, <code>x**2</code> significa x al cuadrado)</li>
+<li>Raíz cuadrada: <code>sqrt()</code></li>
+<li>Valor absoluto: <code>abs()</code></li>
+<li>Logaritmo log_a(x): <code>log(x, a)</code></li>
+<li>Logaritmo natural ln(x): <code>log(x)</code></li>
+<li>Funciones trigonométricas: <code>sin()</code> <code>cos()</code> <code>tan()</code> <code>cot()</code> <code>sec()</code> <code>csc()</code></li>
+<li>Funciones trigonométricas inversas: <code>asin()</code> <code>acos()</code> <code>atan()</code> <code>acot()</code>, etc.</li>
+<li>Funciones hiperbólicas: <code>sinh()</code> <code>cosh()</code> <code>tanh()</code>, etc.</li>
+<li>Número de Euler: <code>e</code></li>
+<li>Pi: <code>pi</code></li>
+<li>Infinito positivo / negativo: <code>oo</code> / <code>-oo</code></li>
+<li>Paréntesis: los paréntesis redondos <code>()</code> funcionan en todas partes</li>
+<li>Unidad imaginaria: <code>I</code></li>
+</ol>
+
+<p><b>Ejemplos:</b></p>
+<table>
+<tr><th>#</th><th>Significado</th><th>Expresión a ingresar</th></tr>
+<tr><td>1</td><td>2x</td><td><code>2*x</code></td></tr>
+<tr><td>2</td><td>x al cuadrado</td><td><code>x**2</code></td></tr>
+<tr><td>3</td><td>raíz cuadrada de x</td><td><code>sqrt(x)</code></td></tr>
+<tr><td>4</td><td>logaritmo en base 2 de x</td><td><code>log(x,2)</code></td></tr>
+<tr><td>5</td><td>logaritmo natural ln(x)</td><td><code>log(x)</code></td></tr>
+<tr><td>6</td><td>seno de x</td><td><code>sin(x)</code></td></tr>
+</table>
+
+<h2>3. Estándar de entrada de conjuntos / intervalos</h2>
+<ol>
+<li><b>Por extensión</b>: <code>FiniteSet(1,2,3)</code></li>
+<li><b>Por comprensión</b>: <code>ImageSet(Lambda(x, f(x)), Domain)</code></li>
+<li><b>Conjuntos predefinidos</b>:
+<ul>
+<li>Números reales: <code>Reals</code></li>
+<li>Números complejos: <code>Complexes</code></li>
+<li>Números naturales: <code>Naturals</code></li>
+<li>Enteros no negativos: <code>Naturals0</code></li>
+<li>Enteros: <code>Integers</code></li>
+<li>Racionales: <code>Rationals</code></li>
+<li>Conjunto vacío: <code>EmptySet</code></li>
+</ul>
+</li>
+<li><b>Intervalos</b>:
+<ul>
+<li>Cerrado [x,y]: <code>Interval(x,y)</code></li>
+<li>Abierto por izquierda (x,y]: <code>Interval.Lopen(x,y)</code></li>
+<li>Abierto por derecha [x,y): <code>Interval.Ropen(x,y)</code></li>
+<li>Abierto (x,y): <code>Interval.open(x,y)</code></li>
+</ul>
+</li>
+<li><b>Unión</b>: <code>Union(A,B)</code></li>
+<li><b>Intersección</b>: <code>Intersection(A,B)</code></li>
+<li><b>Complemento / diferencia</b>: <code>Complement(A,B)</code>, donde A es el conjunto universal</li>
+</ol>
+
+<p><b>Ejemplos:</b></p>
+<table>
+<tr><th>#</th><th>Significado</th><th>Expresión a ingresar</th></tr>
+<tr><td>1</td><td>conjunto {1,2}</td><td><code>FiniteSet(1,2)</code></td></tr>
+<tr><td>2</td><td>intervalo [1,2]</td><td><code>Interval(1,2)</code></td></tr>
+<tr><td>3</td><td>intervalo [1,2)</td><td><code>Interval.Ropen(1,2)</code></td></tr>
+<tr><td>4</td><td>intervalo (1,2)</td><td><code>Interval.open(1,2)</code></td></tr>
+<tr><td>5</td><td>unión {0}∪[1,2]</td><td><code>Union(FiniteSet(0),Interval(1,2))</code></td></tr>
+<tr><td>6</td><td>intersección {1,2}∩{2,3}</td><td><code>Intersection(FiniteSet(1,2),FiniteSet(2,3))</code></td></tr>
+<tr><td>7</td><td>complemento R \ [-1,1]</td><td><code>Complement(Reals,Interval(-1,1))</code></td></tr>
+</table>
+
+<h3>Casos de uso de FiniteSet</h3>
+<ul>
+<li>En el Área de definición de la página Todo en uno con el tipo «Función», use <code>FiniteSet(1,2,3)</code> en la entrada del <b>dominio de la función</b> para restringir el dominio al conjunto discreto {1,2,3}</li>
+<li>En el Área de cálculo con el tipo «Ecuación», use <code>FiniteSet(0,1)</code> en la entrada del <b>rango de la variable principal</b> para resolver solo las raíces dentro de ese conjunto</li>
+<li>Combínelo con operaciones de conjuntos: <code>Union(Interval(0,1), FiniteSet(2))</code> representa la unión del intervalo [0,1] y el punto 2</li>
+</ul>
+
+<h3>Casos de uso de ImageSet</h3>
+<ul>
+<li>Definir un conjunto imagen: <code>ImageSet(Lambda(x, x**2), Interval(0, 5))</code> representa {x² | x∈[0,5]}</li>
+<li>Soluciones periódicas con funciones trigonométricas: el conjunto solución de sin(x)=0 se puede escribir como <code>ImageSet(Lambda(n, n*pi), Integers)</code>, donde n es un entero</li>
+<li>Describir un rango complejo en la entrada del <b>dominio</b> del Área de definición: <code>ImageSet(Lambda(x, 2*x+1), Integers)</code> representa el conjunto de todos los enteros impares</li>
+</ul>
+
+<h2>4. Estándar de entrada de funciones</h2>
+<p>Para una función ya definida en el Área de definición de la página Todo en uno, puede usarla directamente en la mayoría de los demás cuadros de entrada:</p>
+<ul>
+<li><b>Como símbolo en operaciones</b>: por ejemplo, si g(x)=x**2 está definida, ingresar <code>g+1/g</code> da x**2 + 1/x**2</li>
+<li><b>Como llamada de función con argumentos</b>: por ejemplo, si f(x)=x**2 está definida, ingresar <code>f(3)</code> calcula automáticamente 3**2 = 9; se admiten llamadas anidadas como <code>f(g(2))</code></li>
+</ul>
+
+<h2>5. Racionalización del denominador</h2>
+<p>En módulos como derivada, integral, resolución de ecuaciones y simplificación de expresiones, si el denominador de un resultado contiene un radical, el sistema racionaliza automáticamente el denominador, simplificando el resultado a su forma más simple en la que tanto el numerador como el denominador son expresiones enteras o radicales.</p>
+
+<div class="note">
+<b>Ejemplo:</b> al calcular 1/sqrt(2), el resultado se muestra automáticamente como sqrt(2)/2 en lugar de 1/sqrt(2).
+</div>
+
+<h2>6. Motores de cálculo</h2>
+<p>En el Área de cálculo de la página Todo en uno con el tipo «Calcular», se admiten cuatro motores de cálculo:</p>
+<ol>
+<li><b>Motor incorporado de Python</b>: usa el eval incorporado de Python para calcular rápidamente expresiones numéricas; los resultados se muestran como texto plano</li>
+<li><b>Motor de alta precisión Mpmath</b>: precisión decimal personalizable, apto para cálculos numéricos de alta precisión; los resultados se muestran como texto plano</li>
+<li><b>Motor simbólico Sympy</b>: realiza cálculo simbólico basado en Sympy; los resultados se muestran <b>tanto como código LaTeX como texto plano</b>.</li>
+<li><b>Motor de generación de código LaTeX</b>: genera el <b>código LaTeX</b> correspondiente directamente a partir de la expresión de Python ingresada</li>
+</ol>
+
+<h2>7. Funciones de vectores</h2>
+<p>En el Área de definición de la página Todo en uno con el tipo «Vector», puede definir vectores 2D y realizar operaciones con vectores.</p>
+
+<h3>Definir un vector</h3>
+<ol>
+<li><b>Nombre del vector</b>: por defecto <code>v</code>, personalizable</li>
+<li><b>Coordenadas x/y del vector</b>: ingrese por separado las componentes x e y, admitiendo expresiones de SymPy (por ejemplo, <code>sqrt(3)</code>, <code>pi/2</code>)</li>
+<li>Haga clic en <b>Guardar</b> para agregar el vector a la lista, o en <b>Eliminar</b> para quitar el vector seleccionado</li>
+</ol>
+
+<h3>Propiedades del vector</h3>
+<ul>
+<li><b>Expresión</b>: muestra el vector en forma de coordenadas</li>
+<li><b>Módulo</b>: la longitud del vector, es decir, sqrt(x² + y²)</li>
+<li><b>Ángulo de dirección</b>: el ángulo entre el vector y el semieje x positivo</li>
+<li><b>Vector unitario</b>: un vector con la misma dirección y módulo 1</li>
+</ul>
+
+<h3>Operaciones con vectores</h3>
+<ol>
+<li>Seleccione dos vectores definidos del desplegable</li>
+<li>Seleccione el tipo de operación: <b>suma</b>, <b>resta</b>, <b>producto escalar</b>, <b>ángulo</b></li>
+<li>Haga clic en <b>Calcular</b>; el resultado se muestra tanto como LaTeX renderizado como texto plano</li>
+</ol>
+
+<div class="note">
+<b>Ejemplo:</b> defina v1 = (1, 0), v2 = (0, 1); la suma da (1, 1), el producto escalar es 0 y el ángulo es π/2.
+</div>
+
+<h2>8. Resolución de triángulos</h2>
+<p>En el Área de cálculo de la página Todo en uno con el tipo «Resolver triángulo», ingrese las condiciones conocidas de un triángulo para resolver las incógnitas restantes.</p>
+
+<h3>Entrada de condiciones</h3>
+<ol>
+<li>Tres cuadros de condición, cada uno con un tipo seleccionable del desplegable: <b>ángulo A</b>, <b>ángulo B</b>, <b>ángulo C</b>, <b>lado a</b>, <b>lado b</b>, <b>lado c</b></li>
+<li>Complete los valores en los cuadros de entrada correspondientes, admitiendo expresiones de SymPy (por ejemplo, <code>pi/3</code>, <code>sqrt(2)</code>)</li>
+<li>Deben completarse exactamente 3 condiciones válidas</li>
+</ol>
+
+<h3>Casos admitidos</h3>
+<table>
+<tr><th>Caso</th><th>Condiciones conocidas</th><th>Nota</th></tr>
+<tr><td>ALA</td><td>dos ángulos y el lado comprendido</td><td>solución única</td></tr>
+<tr><td>AAL</td><td>dos ángulos y un lado no comprendido</td><td>solución única</td></tr>
+<tr><td>LAL</td><td>dos lados y el ángulo comprendido</td><td>solución única</td></tr>
+<tr><td>LLA</td><td>dos lados y un ángulo opuesto a uno de ellos</td><td>puede tener dos, una o ninguna solución</td></tr>
+<tr><td>LLL</td><td>tres lados</td><td>solución única</td></tr>
+</table>
+
+<div class="note">
+<b>Ejemplo:</b> condición1=ánguloA=pi/3, condición2=ánguloB=pi/4, condición3=ladoc=5, resolver para ánguloC, ladoa, ladob.<br>
+Si existen varias soluciones (por ejemplo, LLA), el sistema las etiqueta como «Solución 1», «Solución 2» respectivamente.
+</div>
+
+<h2>9. Graficación de funciones</h2>
+<p>En el Área de graficación de la página Todo en uno con el «modo Función» seleccionado, puede graficar las curvas de funciones.</p>
+
+<h3>Uso</h3>
+<ol>
+<li><b>Modo expresión</b>: ingrese la expresión de la función directamente (por ejemplo, <code>x**2</code>, <code>sin(x)</code>)</li>
+<li><b>Modo seleccionar función</b>: marque las funciones definidas en el Área de definición</li>
+<li>Configure los extremos izquierdo/derecho del <b>dominio</b> (por defecto [-10, 10]), admitiendo expresiones de SymPy</li>
+<li>Haga clic en <b>Graficar o Actualizar</b> para generar el gráfico</li>
+</ol>
+
+<h3>Características</h3>
+<ul>
+<li>Renderizado con Matplotlib, con ejes claramente rotulados</li>
+<li>Maneja automáticamente las discontinuidades (por ejemplo, <code>1/x</code> se interrumpe en x=0)</li>
+<li>El eje y se autoescala al rango visible</li>
+</ul>
+
+<div class="note">
+<b>Ejemplo:</b> ingrese <code>sin(x)</code>, configure el dominio en [0, 2*pi] y haga clic en Graficar para ver una onda senoidal completa.
+</div>
+
+<h2>10. Geometría plana</h2>
+<p>En el Área de definición de la página Todo en uno con el tipo «Geometría plana», defina puntos, rectas, segmentos, circunferencias, triángulos y polígonos, y luego visualícelos en el Área de graficación con el «modo Geometría plana».</p>
+
+<h3>Definir objetos</h3>
+<ol>
+<li>Seleccione un <b>método de creación</b> del desplegable (19 en total)</li>
+<li>Ingrese el <b>nombre del objeto</b></li>
+<li>Ingrese los <b>parámetros</b> (separados por comas inglesas de ancho medio)</li>
+<li>Presione Enter o haga clic en el botón <b>Guardar</b> para crear el objeto</li>
+</ol>
+
+<h3>Métodos de creación admitidos</h3>
+<table>
+<tr><th>Categoría</th><th>Método</th><th>Parámetros</th></tr>
+<tr><td>Básico</td><td>punto por coordenadas</td><td>x, y</td></tr>
+<tr><td>Básico</td><td>recta por dos puntos</td><td>punto1, punto2</td></tr>
+<tr><td>Básico</td><td>circunferencia por centro y radio</td><td>centro, radio</td></tr>
+<tr><td>Básico</td><td>circunferencia por tres puntos (circunscrita)</td><td>punto1, punto2, punto3</td></tr>
+<tr><td>Básico</td><td>triángulo por tres puntos</td><td>punto1, punto2, punto3</td></tr>
+<tr><td>Básico</td><td>polígono por lista de vértices</td><td>punto1, punto2, ...</td></tr>
+<tr><td>Circunferencia</td><td>circunferencia por extremos de un diámetro</td><td>punto1, punto2</td></tr>
+<tr><td>Circunferencia</td><td>circunferencia por centro y un punto sobre ella</td><td>centro, puntoSobreCircunferencia</td></tr>
+<tr><td>Recta</td><td>mediatriz de un segmento</td><td>nombreSegmento</td></tr>
+<tr><td>Recta</td><td>paralela por un punto</td><td>nombrePunto, nombreSegmento</td></tr>
+<tr><td>Recta</td><td>perpendicular por un punto</td><td>nombrePunto, nombreSegmento</td></tr>
+<tr><td>Recta</td><td>bisectriz de dos rectas</td><td>recta1, recta2</td></tr>
+<tr><td>Recta</td><td>bisectriz (tres puntos)</td><td>punto1, punto2(vértice), punto3</td></tr>
+<tr><td>Triángulo</td><td>mediana de un triángulo</td><td>nombreTriángulo, índiceVértice(0/1/2)</td></tr>
+<tr><td>Triángulo</td><td>altura de un triángulo</td><td>nombreTriángulo, índiceVértice(0/1/2)</td></tr>
+<tr><td>Triángulo</td><td>base media de un triángulo</td><td>nombreTriángulo</td></tr>
+<tr><td>Triángulo</td><td>circunferencia inscrita de un triángulo</td><td>nombreTriángulo</td></tr>
+<tr><td>Triángulo</td><td>circunferencia exinscrita de un triángulo</td><td>nombreTriángulo, índiceVértice(0/1/2)</td></tr>
+<tr><td>Segmento</td><td>segmento por dos puntos</td><td>punto1, punto2</td></tr>
+</table>
+
+<h3>Graficación</h3>
+<p>En el Área de graficación con el «modo Geometría plana», todos los objetos definidos están marcados por defecto. Desmarque los que no necesite y luego haga clic en <b>Graficar o Actualizar</b> para generar la imagen de Matplotlib.</p>
+
+<h2>11. Geometría del espacio</h2>
+<p>En el Área de definición de la página Todo en uno con el tipo «Geometría del espacio», defina puntos, rectas, planos y segmentos en 3D, y luego visualícelos en el Área de graficación con el «modo Geometría del espacio».</p>
+
+<h3>Métodos admitidos</h3>
+<table>
+<tr><th>Método</th><th>Parámetros</th></tr>
+<tr><td>punto por coordenadas</td><td>x, y, z</td></tr>
+<tr><td>recta por dos puntos</td><td>punto1, punto2</td></tr>
+<tr><td>plano paralelo por un punto</td><td>nombrePlano, nombrePunto</td></tr>
+<tr><td>plano perpendicular a una recta por un punto</td><td>nombreRecta, nombrePunto</td></tr>
+<tr><td>recta paralela a una recta por un punto</td><td>nombreRecta, nombrePunto</td></tr>
+<tr><td>perpendicular a una recta por un punto</td><td>nombrePunto, nombreRecta</td></tr>
+<tr><td>perpendicular a un plano por un punto</td><td>nombrePlano, nombrePunto</td></tr>
+<tr><td>plano por una recta y un punto exterior</td><td>nombreRecta, nombrePunto</td></tr>
+<tr><td>plano por dos rectas secantes/paralelas</td><td>nombreRecta1, nombreRecta2</td></tr>
+<tr><td>pie de la perpendicular de un punto a un plano</td><td>nombrePunto, nombrePlano</td></tr>
+<tr><td>pie de la perpendicular de un punto a una recta</td><td>nombrePunto, nombreRecta</td></tr>
+<tr><td>segmento 3D por dos puntos</td><td>punto1, punto2</td></tr>
+</table>
+
+<h3>Graficación</h3>
+<p>En el Área de graficación con el «modo Geometría del espacio», filtre los objetos con las casillas de verificación y luego haga clic en <b>Graficar o Actualizar</b> para generar una imagen 3D rotable de Matplotlib (con planos transparentes y rectas de colores).</p>
+
+<h2>12. Cálculo de geometría plana</h2>
+<p>En el Área de cálculo de la página Todo en uno con el tipo «Cálculo en el plano», use puntos, rectas, circunferencias, triángulos, polígonos, etc. definidos para el cálculo geométrico. Los parámetros se separan con <b>comas inglesas de ancho medio</b>, y los objetos definidos se referencian por su nombre.</p>
+
+<h3>Operaciones admitidas (32 en total)</h3>
+<table>
+<tr><th>Categoría</th><th>Operación</th><th>Ejemplo de parámetros</th></tr>
+<tr><td>Punto</td><td>distancia entre dos puntos</td><td>A, B</td></tr>
+<tr><td>Punto</td><td>coordenadas del punto medio</td><td>A, B</td></tr>
+<tr><td>Punto</td><td>verificación de colinealidad</td><td>A, B, C</td></tr>
+<tr><td>Punto</td><td>trasladar punto</td><td>A, 1, 2</td></tr>
+<tr><td>Punto</td><td>rotar punto respecto de un punto fijo</td><td>A, pi/2, O</td></tr>
+<tr><td>Punto</td><td>reflejar punto respecto de una recta</td><td>A, L1</td></tr>
+<tr><td>Recta</td><td>ecuación de la recta</td><td>A, B</td></tr>
+<tr><td>Recta</td><td>pendiente de la recta</td><td>A, B</td></tr>
+<tr><td>Recta</td><td>intersección de dos rectas</td><td>L1, L2</td></tr>
+<tr><td>Recta</td><td>distancia de un punto a una recta</td><td>A, L1</td></tr>
+<tr><td>Recta</td><td>ángulo entre dos rectas</td><td>L1, L2</td></tr>
+<tr><td>Recta</td><td>verificación de paralelismo / perpendicularidad</td><td>L1, L2</td></tr>
+<tr><td>Circunferencia</td><td>centro / radio / área / perímetro</td><td>C1</td></tr>
+<tr><td>Circunferencia</td><td>intersección de dos circunferencias</td><td>C1, C2</td></tr>
+<tr><td>Circunferencia</td><td>ecuación de la recta tangente</td><td>A, C1</td></tr>
+<tr><td>Triángulo</td><td>área / perímetro / circuncentro / incentro / baricentro / ortocentro</td><td>T1</td></tr>
+<tr><td>Triángulo</td><td>circunradio / inradio</td><td>T1</td></tr>
+<tr><td>Triángulo</td><td>verificación de rectángulo/isósceles/equilátero</td><td>T1</td></tr>
+<tr><td>Polígono</td><td>área / perímetro</td><td>A, B, C, D</td></tr>
+<tr><td>Transformación</td><td>trasladar / rotar / reflejar</td><td>ver operaciones de Punto</td></tr>
+<tr><td>Vector</td><td>vector entre puntos / módulo / producto escalar / ángulo</td><td>A, B</td></tr>
+</table>
+
+<div class="note">
+<b>Ejemplo:</b> primero defina los puntos A(0,0), B(3,0), C(0,4) en el Área de definición con el tipo «Geometría plana»; en el Área de cálculo seleccione «Cálculo en el plano» → «Área del triángulo» con los parámetros <code>A,B,C</code>; el resultado es 6.
+</div>
+
+<h2>13. Cálculo de geometría del espacio</h2>
+<p>En el Área de cálculo de la página Todo en uno con el tipo «Cálculo en el espacio», use puntos, rectas, planos, etc. en 3D definidos para el cálculo geométrico espacial.</p>
+
+<h3>Operaciones admitidas (22 en total)</h3>
+<table>
+<tr><th>Categoría</th><th>Operación</th><th>Ejemplo de parámetros</th></tr>
+<tr><td>Punto</td><td>distancia / punto medio entre dos puntos</td><td>A, B</td></tr>
+<tr><td>Punto</td><td>distancia de un punto a un plano</td><td>A, P1</td></tr>
+<tr><td>Punto</td><td>distancia de un punto a una recta</td><td>A, L1</td></tr>
+<tr><td>Punto</td><td>proyectar punto sobre plano / recta</td><td>A, P1 o A, L1</td></tr>
+<tr><td>Punto</td><td>verificación de coplanaridad</td><td>A, B, C, D</td></tr>
+<tr><td>Recta</td><td>vector director / intersección / ángulo</td><td>L1, L2</td></tr>
+<tr><td>Recta</td><td>verificación de paralelismo / perpendicularidad</td><td>L1, L2</td></tr>
+<tr><td>Recta</td><td>proyección de una recta sobre un plano</td><td>L1, P1</td></tr>
+<tr><td>Plano</td><td>ecuación del plano por tres puntos</td><td>A, B, C</td></tr>
+<tr><td>Plano</td><td>vector normal del plano</td><td>P1</td></tr>
+<tr><td>Plano</td><td>ángulo / recta de intersección / paralelismo-perpendicularidad de dos planos</td><td>P1, P2</td></tr>
+<tr><td>Recta-Plano</td><td>intersección de plano y recta</td><td>P1, L1</td></tr>
+<tr><td>Recta-Plano</td><td>ángulo entre recta y plano</td><td>L1, P1</td></tr>
+<tr><td>Volumen</td><td>volumen del tetraedro</td><td>A, B, C, D</td></tr>
+<tr><td>Vector(3D)</td><td>vector / módulo / producto escalar / producto vectorial / ángulo entre puntos</td><td>A, B</td></tr>
+<tr><td>Proyección oblicua</td><td>proyección / inversa / razón de áreas</td><td>A o 1,2,0</td></tr>
+</table>
+
+<div class="note">
+<b>Ejemplo:</b> primero defina los puntos A(0,0,0), B(1,0,0), C(0,1,0), D(0,0,1) en el Área de definición con el tipo «Geometría del espacio»; en el Área de cálculo seleccione «Cálculo en el espacio» → «Volumen del tetraedro» con los parámetros <code>A,B,C,D</code>; el resultado es 1/6.
+</div>
+
+<h2>14. Estándar de entrada de ecuaciones diferenciales</h2>
+<p>La entrada de ecuaciones diferenciales <b>no</b> sigue el estándar de entrada de funciones anterior, porque la solución es desconocida antes de resolver. El sistema <b>excluye todas las funciones definidas</b> al analizar la expresión para evitar interferencias, y la función a resolver queda fijada como f(x).</p>
+<p>En la entrada, use <code>f(x).diff(x,n)</code> para denotar la <b>n-ésima derivada respecto de x</b>. El 1 se puede omitir, por lo que <code>f(x).diff(x)</code> denota la primera derivada.</p>
+<p><b>Ejemplo:</b> en el Área de cálculo seleccione «Ecuación» y marque «Ecuación diferencial», ingrese <code>f(x).diff(x,1)</code> a la izquierda y <code>f(x)+1</code> a la derecha, completando la entrada de f'(x)=f(x)+1; haga clic en Resolver para obtener f(x)=C1*exp(x)-1.</p>
+
+<h2>15. Configuración, idioma y tema</h2>
+<p>Abra la página de configuración desde la barra de menús «Archivo → Configuración» para ajustar lo siguiente:</p>
+<ol>
+<li><b>Idioma de la interfaz</b>: la aplicación está localizada al español. El cambio tiene efecto de inmediato y se conserva; se restaura automáticamente en el siguiente inicio.</li>
+<li><b>Tema de la interfaz</b>: Claro / Oscuro. Tiene efecto de inmediato y se conserva; se restaura automáticamente en el siguiente inicio.</li>
+<li><b>Ayuda</b>: la página de ayuda acompaña al idioma de la interfaz; con la interfaz en español se carga la ayuda en español (<code>help_es.html</code>).</li>
+</ol>
+<p>La configuración se guarda como JSON en el directorio de configuración estándar de Qt (ruta típica <code>AppData/Local/CalculusCalculator/CalculusCalculator/settings.json</code>), con contenido como <code>{"language": "es_ES", "theme": "dark"}</code>.</p>
+
+<p>Desde la barra de menús «Archivo → Guardar / Abrir» puede guardar el espacio de trabajo actual (incluidos el tema y el idioma) como un archivo de proyecto, que restaura el tema y el idioma guardados al abrirlo.</p>
+
+<h2>16. Caché de expresiones</h2>
+<p>Almacene temporalmente y gestione expresiones de uso frecuente mediante la función «Caché», de dos maneras:</p>
+
+<h3>Pestaña Caché</h3>
+<ol>
+<li>Abra la pestaña de caché desde la barra de menús «Archivo → Caché» para mostrar todas las expresiones en caché</li>
+<li><b>Haga doble clic</b> en cualquier elemento en caché de la lista para copiar su texto al portapapeles</li>
+<li>La lista de caché de la pestaña se sincroniza en tiempo real con los datos de caché de la ventana principal</li>
+</ol>
+
+<h3>Botones rápidos del cuadro de entrada</h3>
+<p>Cada cuadro de entrada de texto tiene tres botones rápidos con íconos a su derecha:</p>
+<table>
+<tr><th>Ícono</th><th>Función</th><th>Descripción</th></tr>
+<tr><td>teclado</td><td><b>Entrada visual</b></td><td>abre el editor de fórmulas para insertar símbolos y estructuras matemáticas de forma gráfica</td></tr>
+<tr><td>abrir</td><td><b>Abrir caché</b></td><td>muestra el diálogo de caché; haga doble clic en un elemento en caché para completar el cuadro de entrada actual</td></tr>
+<tr><td>más</td><td><b>Guardar en caché</b></td><td>almacena el texto del cuadro de entrada actual en la caché (los duplicados se mueven al frente; el ícono se convierte brevemente en una tilde)</td></tr>
+</table>
+
+<h2>17. Entrada visual de fórmulas</h2>
+<p>Un panel de entrada visual de fórmulas matemáticas basado en MathLive (incluido en el directorio <code>math_input/</code>). Desde la v2.0.0, el <b>motor subyacente del editor de fórmulas se reemplazó por MathLive</b>, lo que ofrece una experiencia de entrada más fluida y un renderizado de símbolos más preciso.</p>
+
+<h3>Uso</h3>
+<ol>
+<li>Haga clic en el botón con el <b>ícono de teclado</b> a la derecha de cualquier cuadro de entrada para abrir el diálogo de fórmulas</li>
+<li>En el diálogo, use la barra de herramientas para seleccionar estructuras matemáticas (fracciones, raíces, sub/superíndices, letras griegas, etc.), operadores o funciones</li>
+<li>Al terminar de editar, haga clic en <b>Aceptar</b>; la fórmula se convierte automáticamente en una expresión de SymPy y se completa en el cuadro de entrada</li>
+</ol>
+
+<h3>Grupos de la barra de herramientas</h3>
+<ul>
+<li><b>Estructura</b>: fracción, raíz, potencia, valor absoluto, paréntesis, etc.</li>
+<li><b>Letras griegas</b>: letras griegas comunes α~ω</li>
+<li><b>Edición</b>: deshacer, rehacer, cortar, etc.</li>
+<li><b>Operadores</b>: +, -, ×, ÷, =, ≠, etc.</li>
+<li><b>Funciones</b>: sin, cos, log, lim, etc.</li>
+</ul>
+
+<h2>18. Opciones de guardado</h2>
+<p>En el área «Opciones de guardado (al guardar)» de la página de configuración, puede ajustar con precisión qué tipos de información se guardan mediante casillas de verificación:</p>
+
+<table>
+<tr><th>Opción</th><th>Descripción</th></tr>
+<tr><td>Lista de funciones</td><td>definiciones de funciones personalizadas (diccionario fs)</td></tr>
+<tr><td>Lista de ecuaciones (sistemas)</td><td>lista de todas las expresiones de ecuaciones ingresadas</td></tr>
+<tr><td>Lista de inecuaciones (sistemas)</td><td>lista de todas las expresiones de inecuaciones ingresadas</td></tr>
+<tr><td>Lista de vectores</td><td>todos los vectores definidos</td></tr>
+<tr><td>Todo el contenido de la caché</td><td>todas las expresiones almacenadas en el área de caché</td></tr>
+<tr><td>Lista de objetos de geometría plana</td><td>puntos, rectas, circunferencias, triángulos, etc. definidos en geometría plana</td></tr>
+<tr><td>Lista de objetos de geometría del espacio</td><td>puntos, rectas, planos, etc. definidos en geometría del espacio</td></tr>
+<tr><td>Todos los textos de los cuadros de texto</td><td>contenido de texto de todos los cuadros de entrada</td></tr>
+<tr><td>Todas las opciones de los cuadros de selección</td><td>selección actual de todos los desplegables</td></tr>
+<tr><td>Todos los contenidos de visualización de expresiones</td><td>contenido de todas las vistas de renderizado de fórmulas</td></tr>
+<tr><td>Todas las opciones de configuración</td><td>índice de pestaña, idioma, tema y otros ajustes del entorno</td></tr>
+</table>
+
+<div class="note">
+<b>Sugerencia:</b> todos los elementos de la lista están marcados por defecto. Si desmarca un elemento, ese tipo de datos <b>no</b> se guardará; al cargar, si el guardado no contiene ese tipo de datos, se <b>mantiene sin cambios el estado actual</b>. Las pestañas independientes contenidas en archivos de guardado más antiguos se omiten automáticamente al cargar y no afectan el resto de la restauración.
+</div>
+
+<h2>19. Función Blockly</h2>
+<p>Abra el editor Blockly desde «Funciones → Editor» y construya un <b>flujo de cálculo visual</b> arrastrando y encajando bloques, completando cálculos complejos sin escribir código. Actualmente se admite:</p>
+<ul>
+<li><b>Entrada de expresiones Sympy / Latex</b>: los bloques pueden tomar directamente expresiones de SymPy, o usar un <code>$</code> inicial para entrada LaTeX (ver «1. Entrada directa de código LaTeX»).</li>
+<li><b>Ejecutar el flujo directamente en el editor</b>: haga clic en Ejecutar para correr en orden el flujo construido con bloques, mostrando resultados intermedios en tiempo real.</li>
+<li><b>Renderizado automático de fórmulas de salida</b>: los resultados se renderizan automáticamente como fórmulas matemáticas claras y prolijas en LaTeX.</li>
+<li><b>Vista previa de código en doble modo</b>: haga clic en «Vista previa de código» y use el desplegable para alternar entre <b>código SymPy nativo</b> (autocontenido, solo requiere SymPy: cópielo y ejecútelo directamente en cualquier intérprete con SymPy instalado) y <b>código de la biblioteca de CalculusCalculator</b> (el código que ejecuta realmente el botón Ejecutar); el código SymPy nativo se muestra por defecto.</li>
+<li><b>Definir función / análisis de funciones</b>: defina funciones mediante bloques y analice su dominio, monotonía, paridad, etc.</li>
+<li><b>Derivada / integral</b>: use los bloques correspondientes para derivar o integrar una función.</li>
+<li><b>Ecuaciones / inecuaciones / resolución de triángulos</b>: use los bloques de resolución para tratar ecuaciones, inecuaciones y triángulos.</li>
+<li><b>Guardar / cargar proyecto</b>: los proyectos Blockly se pueden guardar y cargar, controlado por el elemento «Opciones de guardado» en «Configuración» (ver «18. Opciones de guardado»).</li>
+</ul>
+
+<h2>20. Pantalla de carga y optimización del inicio</h2>
+<p>Una <b>pantalla de carga</b> muestra el progreso y sugerencias mientras el programa carga los recursos, evitando una espera en blanco durante el inicio. La v2.1.0 optimiza aún más el flujo de inicio:</p>
+<ul>
+<li><b>Inicialización perezosa del motor del navegador</b>: el núcleo QWebEngine ya no se carga al inicio; en cambio, se inicializa automáticamente la primera vez que se abre el editor Blockly, la entrada visual de fórmulas o la Calculadora de expresiones, acelerando el inicio.</li>
+<li><b>Pantalla de carga liviana</b>: la pantalla de carga se dibuja y muestra más rápido, dando retroalimentación visible antes.</li>
+<li><b>Inicialización simplificada</b>: se omiten los refrescos redundantes de las vistas de renderizado de fórmulas al inicio.</li>
+<li>Combinado con el mecanismo de carga perezosa existente (<code>lazy_loader</code>), se <b>optimiza la velocidad general de inicio</b>.</li>
+</ul>
+
+<h2>21. Calculadora de expresiones</h2>
+<p>Abra la pestaña del lienzo de expresiones desde «Funciones → Calculadora de expresiones». Escriba una expresión en el cuadro de entrada y presione <b>Enter</b> o haga clic en <b>Agregar</b>; la expresión se agrega al lienzo con su orden de entrada y paréntesis conservados, coloreada por profundidad del árbol (rojo → verde → azul → violeta).</p>
+<ul>
+<li><b>Seleccionar e inspeccionar</b>: haga clic en cualquier nodo de una fórmula para mostrar su estructura de árbol y la expresión de SymPy correspondiente en el panel de detalle inferior; haga clic en <code>+</code> / <code>−</code> para intercambiar términos adyacentes, o en los paréntesis para expandirlos.</li>
+<li><b>Transformaciones y operaciones</b>: el botón «Transformar» en la parte inferior derecha del cuadro de selección ofrece simplify, expand, factor, cancel, together, apart, trigsimp, radsimp, además de reemplazar, agregar, multiplicar, recíproco, dividir, elevar al cuadrado, raíz cuadrada y potencia; arrastre un nodo seleccionado sobre una tarjeta de expresión para aplicar reemplazo u operaciones aritméticas al nodo objetivo (los nodos fracción también admiten multiplicar/dividir numerador y denominador).</li>
+<li><b>Disposición y deshacer</b>: arrastre el punto rojo de la parte superior izquierda de una tarjeta para moverla; use «Deshacer / Rehacer» o <code>Ctrl+Z</code> / <code>Ctrl+Y</code> para recorrer las instantáneas del historial de todo el lienzo; el deslizador de la parte superior derecha ajusta el tamaño de fuente.</li>
+</ul>
+<p>Las fórmulas se renderizan con el MathJax local incluido (<code>mathjax/es5/tex-svg.js</code>) sin acceso a la red; la página lo referencia mediante la ruta relativa <code>../mathjax/</code>, por lo que debe mantener ese directorio en su lugar.</p>
+
+<h2>Recursos adicionales</h2>
+<p>El contenido anterior se basa íntegramente en las especificaciones del lenguaje de Python 3.12 y SymPy 1.14.</p>
+<p>Si tiene dudas, consulte:</p>
+<ol>
+<li><b>Documentación oficial de Python</b>: <a href="https://docs.python.org/3.12/" target="_blank">https://docs.python.org/3.12/</a></li>
+<li><b>Documentación oficial de SymPy</b>: <a href="https://docs.sympy.org/latest/index.html" target="_blank">https://docs.sympy.org/latest/index.html</a></li>
+<li><b>Documentación oficial de Mpmath</b>: <a href="https://mpmath.readthedocs.io/en/latest/" target="_blank">https://mpmath.readthedocs.io/en/latest/</a></li>
+</ol>
+
+<h2>Historial de versiones</h2>
+<table>
+<tr><th>Versión</th><th>Fecha de publicación</th><th>Actualizaciones principales</th></tr>
+
+<tr><td>v2.1.0</td><td>2026-10-10</td><td>Se eliminaron 18 pestañas de funciones independientes (Definir función, Definir vector, Definir geometría plana, Definir geometría del espacio, Cálculo algebraico, Transformar, Cálculo en el plano, Cálculo en el espacio, Resolver triángulo, Ecuación, Inecuación, Sistema de ecuaciones, Sistema de inecuaciones, Graficar función, Gráfico en el plano, Gráfico en el espacio, Derivada, Integral): todas las funciones se integraron en la página «Todo en uno» (áreas Definir / Calcular / Graficar); el menú «modo Blockly» se movió al menú «Funciones»; optimizaciones del inicio: el núcleo QWebEngine se inicializa de forma perezosa en el primer uso, pantalla de carga liviana, se omiten refrescos redundantes de las vistas de fórmulas al inicio, se agregó un perfilado del inicio por etapas</td></tr>
+
+<tr><td>v2.0.0</td><td>2026-08-14</td><td>Nueva función Blockly (flujo de cálculo visual); backend del editor de fórmulas actualizado a MathLive; nueva pantalla de carga e inicio optimizado; se agregó documentación de ayuda en inglés; Blockly agregó vista previa de código en doble modo (código SymPy nativo / código de biblioteca); se corrigió la detección errónea del renderizado de salida LaTeX; se corrigió un error de acceso por subíndice cuando sympify recibe un objeto de SymPy</td></tr>
+</table>
+
+<p>¡Gracias por usarlo!</p>
+<p class="right">LiMingkang</p>
+<p class="right">2026/10/10</p>
+
+</body>
+</html>

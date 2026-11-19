@@ -1703,10 +1703,10 @@ class ExpressionDialog(QDialog):
         try:
             self._apply(self.selected_node, self.operation)
         except ZeroDivisionError:
-            QMessageBox.warning(self, "无法执行", "拖拽节点为零，不能作为除数或乘数。")
+            QMessageBox.warning(self, "No se puede ejecutar", "El nodo arrastrado es cero; no puede usarse como divisor ni multiplicador.")
             return
         except Exception as exc:
-            QMessageBox.warning(self, "无法执行", str(exc))
+            QMessageBox.warning(self, "No se puede ejecutar", str(exc))
             return
         self.result_tree = self.tree
         self.accept()
@@ -1911,23 +1911,23 @@ class TransformDialog(QDialog):
         if key in self.NEEDS_INPUT:
             text = self.input_edit.text().strip()
             if not text:
-                QMessageBox.warning(self, "缺少表达式", "当前操作需要输入一个表达式。")
+                QMessageBox.warning(self, "Falta la expresión", "Esta operación requiere ingresar una expresión.")
                 return
             try:
                 expression = parse_sympy(text)
                 self.input_tree = from_sympy(expression, ordered=False)
             except Exception as exc:
-                QMessageBox.warning(self, "表达式无效", str(exc))
+                QMessageBox.warning(self, "Expresión no válida", str(exc))
                 return
             if key == "op_subs":
                 replace_text = self.replace_edit.text().strip()
                 if not replace_text:
-                    QMessageBox.warning(self, "缺少换元式", "请填写换元表达式，例如 x+1。")
+                    QMessageBox.warning(self, "Falta la sustitución", "Complete la expresión de sustitución, por ejemplo x+1.")
                     return
                 try:
                     self.replace_tree = from_sympy(parse_sympy(replace_text), ordered=False)
                 except Exception as exc:
-                    QMessageBox.warning(self, "换元式无效", str(exc))
+                    QMessageBox.warning(self, "Sustitución no válida", str(exc))
                     return
         else:
             self.input_tree = None
@@ -1953,7 +1953,7 @@ def _open_formula_editor(edit) -> None:
     try:
         from math_input.math_input import open_formula_dialog
     except Exception as exc:
-        QMessageBox.warning(edit.window(), "无法打开公式编辑器", str(exc))
+        QMessageBox.warning(edit.window(), "No se puede abrir el editor de fórmulas", str(exc))
         return
     open_formula_dialog(edit)
     _normalize_equation_text(edit)
@@ -1963,7 +1963,7 @@ def _open_cache_dialog(edit) -> None:
     try:
         from ui.huancun import open_cache
     except Exception as exc:
-        QMessageBox.warning(edit.window(), "无法打开缓存区", str(exc))
+        QMessageBox.warning(edit.window(), "No se puede abrir la caché", str(exc))
         return
     open_cache(edit)
 
@@ -2164,18 +2164,18 @@ class SolveDialog(QDialog):
     def _solve(self) -> bool:
         name = self.variable_box.currentText()
         if not name:
-            QMessageBox.warning(self, "无法求解", "请选择一个求解变量。")
+            QMessageBox.warning(self, "No se puede resolver", "Seleccione una variable para resolver.")
             return False
         try:
             domain = self._parse_domain(self.domain_edit.text().strip() or "Reals")
             equation = self.node.to_sympy()
             solutions = sympy.solveset(equation, sympy.Symbol(name), domain)
         except Exception as exc:
-            QMessageBox.warning(self, "求解失败", str(exc))
+            QMessageBox.warning(self, "Error al resolver", str(exc))
             return False
         roots = _finite_solution_roots(solutions)
         if roots == []:
-            QMessageBox.information(self, "无解", "方程在指定范围内没有解。")
+            QMessageBox.information(self, "Sin solución", "La ecuación no tiene solución en el rango indicado.")
             return False
         if roots is None:
             QMessageBox.information(
@@ -2196,7 +2196,7 @@ class SolveDialog(QDialog):
             try:
                 trees.append(from_sympy(value, ordered=True))
             except Exception as exc:
-                QMessageBox.warning(self, "根转换失败", str(exc))
+                QMessageBox.warning(self, "Error al racionalizar", str(exc))
                 return False
         self.roots = trees
         return True
@@ -2360,7 +2360,7 @@ class SystemDialog(QDialog):
             self._warn("求解失败", str(exc))
             return False
         if not solutions:
-            QMessageBox.information(self, "无解", "联立方程组没有找到解。")
+            QMessageBox.information(self, "Sin solución", "El sistema de ecuaciones no tiene solución.")
             return False
         cards = []
         for index, solution in enumerate(solutions, 1):
@@ -2377,7 +2377,7 @@ class SystemDialog(QDialog):
                     return False
                 cards.append((Eq(Symbol(name), root), "解 " + str(index)))
         if not cards:
-            QMessageBox.information(self, "无结果", "求解结果中没有可生成卡片的变量赋值。")
+            QMessageBox.information(self, "Sin resultado", "El resultado no contiene asignaciones de variables para generar una tarjeta.")
             return False
         self.result_cards = cards
         return True
@@ -3221,7 +3221,7 @@ class CommonEquationDialog(QDialog):
         try:
             self.result_trees = self.build_trees()
         except Exception as exc:
-            QMessageBox.warning(self, "无法生成方程", str(exc))
+            QMessageBox.warning(self, "No se puede generar la ecuación", str(exc))
             return
         super().accept()
 
@@ -3314,7 +3314,7 @@ class ExpressionPairDialog(QDialog):
         try:
             self.result_tree = self._build_tree()
         except Exception as exc:
-            QMessageBox.warning(self, "无法组合", str(exc))
+            QMessageBox.warning(self, "No se puede combinar", str(exc))
             return
         super().accept()
 
@@ -3572,7 +3572,7 @@ class GeometryDialog(QDialog):
         try:
             self.result_tree = self._compute()
         except Exception as exc:
-            QMessageBox.warning(self, "无法计算", str(exc))
+            QMessageBox.warning(self, "No se puede calcular", str(exc))
             return
         super().accept()
 
@@ -4194,7 +4194,7 @@ class MainWindow(QMainWindow):
                 result = getattr(sympy, method)(node.to_sympy())
                 transformed = from_sympy(result, ordered=True)
         except Exception as exc:
-            QMessageBox.warning(self, "变形失败", str(exc))
+            QMessageBox.warning(self, "Error en la transformación", str(exc))
             return
         if as_copy:
             copy_item = CanvasItem(item.item_id, item.tree.copy(), item.x, item.y, item.note)
@@ -4218,7 +4218,7 @@ class MainWindow(QMainWindow):
 
     def _apply_substitution(self, item: CanvasItem, input_tree, replace_tree, as_copy: bool = False) -> None:
         if not isinstance(input_tree, Symbol):
-            QMessageBox.warning(self, "无法换元", "请只输入一个符号，例如 t。")
+            QMessageBox.warning(self, "No se puede sustituir", "Ingrese un solo símbolo, por ejemplo t.")
             return
         if replace_tree is None:
             return
@@ -4226,14 +4226,14 @@ class MainWindow(QMainWindow):
         card_names = {symbol.name for symbol in item.tree.free_symbols}
         candidates = sorted({symbol.name for symbol in replace_tree.free_symbols} & card_names)
         if not candidates:
-            QMessageBox.warning(self, "无法换元", "换元式里的变量没有出现在表达式中。")
+            QMessageBox.warning(self, "No se puede sustituir", "La variable de la sustitución no aparece en la expresión.")
             return
         if len(candidates) > 1:
-            QMessageBox.warning(self, "无法换元", "换元式只能包含一个变量，例如 x+1。")
+            QMessageBox.warning(self, "No se puede sustituir", "La sustitución solo puede contener una variable, por ejemplo x+1.")
             return
         variable_name = candidates[0]
         if name in card_names - {variable_name}:
-            QMessageBox.warning(self, "无法换元", f"符号 {name} 已在表达式中使用，请换一个符号。")
+            QMessageBox.warning(self, "No se puede sustituir", f"El símbolo {name} ya se usa en la expresión; elija otro.")
             return
         variable = sympy.Symbol(variable_name)
         try:
@@ -4243,10 +4243,10 @@ class MainWindow(QMainWindow):
                 dict=True,
             )
         except Exception as exc:
-            QMessageBox.warning(self, "无法换元", "解换元式失败：" + str(exc))
+            QMessageBox.warning(self, "No se puede sustituir", "Error al resolver la sustitución: " + str(exc))
             return
         if not solutions:
-            QMessageBox.warning(self, "无法换元", f"无法从换元式解出 {variable_name}，请检查换元式。")
+            QMessageBox.warning(self, "No se puede sustituir", f"No se pudo despejar {variable_name} de la sustitución; revise la sustitución.")
             return
         if len(solutions) > 1:
             QMessageBox.warning(
