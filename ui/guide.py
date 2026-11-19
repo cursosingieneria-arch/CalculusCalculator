@@ -1,12 +1,15 @@
 """初始化引导（新手引导教学）对话框。
 
 通过分步向导带领新用户了解软件各功能区，内容与帮助文档（help.html）对应。
-文案采用双语内嵌字典，按当前界面语言（core.settings.current_language）取用，
-避免与 .ts/.qm 长文本匹配出错；首次启动或用户点击“关于 → 引导”时显示。
+文案采用多语言内嵌字典（中文 zh / 英文 en / 西班牙语 es），按当前界面语言
+（core.settings.current_language）取用，避免与 .ts/.qm 长文本匹配出错；
+首次启动或用户点击“关于 → 引导”时显示。
 
 第 1 步为“语言与主题”设置：用户可在向导最前面选择语言与主题色，
 选择后立即应用（回调 MainWindow.change_language / dark / light）。
-语言选项无论当前语言为何，均固定以“中文 (Chinese)” / “English (中文)” 形式显示。
+
+本模块文本不经过 Qt 的 .ts/.qm 系统，因此需要在此字典中直接提供西班牙语，
+以保证应用默认语言（es_ES）下引导对话框也完全显示为西班牙语。
 """
 
 from PySide6.QtWidgets import (
@@ -21,13 +24,14 @@ from sympy import sympify, SympifyError
 from core.settings import current_language, current_theme, save_initialized
 
 
-# 引导内容步骤（不含第 1 步“语言与主题”设置页）：每步含标题与正文（双语）。
+# 引导内容步骤（不含第 1 步“语言与主题”设置页）：每步含标题与正文（多语言）。
 # 正文为 HTML 片段，对应帮助文档各章节。
 _GUIDE_STEPS = [
     {
         "title": {
             "zh": "欢迎使用 CalculusCalculator",
             "en": "Welcome to CalculusCalculator",
+            "es": "Bienvenido a CalculusCalculator",
         },
         "html": {
             "zh": (
@@ -54,12 +58,27 @@ _GUIDE_STEPS = [
                 "</ul>"
                 "<p>Click “Next” to continue, or “Skip” to enter the main window.</p>"
             ),
+            "es": (
+                "<p>Esta es una calculadora visual para cálculo y álgebra. Esta guía "
+                "te muestra las áreas principales y las operaciones más comunes.</p>"
+                "<h3>Vista general de la interfaz</h3>"
+                "<ul>"
+                "<li><b>Barra de menús</b>: Archivo, Funciones, Blockly, Acerca de, etc.</li>"
+                "<li><b>Pestañas</b>: Derivada, Integral, Definir, Graficar, Geometría "
+                "plana/del espacio, Blockly y más.</li>"
+                "<li><b>Tema e idioma</b>: cambiá claro/oscuro e idioma en "
+                "Funciones → Configuración.</li>"
+                "</ul>"
+                "<p>Hacé clic en «Siguiente» para continuar, o «Saltar» para entrar "
+                "directo a la ventana principal.</p>"
+            ),
         },
     },
     {
         "title": {
             "zh": "表达式输入（SymPy / LaTeX）",
             "en": "Expression Input (SymPy / LaTeX)",
+            "es": "Entrada de expresiones (SymPy / LaTeX)",
         },
         "html": {
             "zh": (
@@ -105,12 +124,37 @@ _GUIDE_STEPS = [
                 "half-width dollar sign <code>$</code>, e.g. <code>$\\frac{x}{2}</code>, "
                 "<code>$x^{2}</code>, <code>$\\sin{x}</code>.</p>"
             ),
+            "es": (
+                "<div style=\"margin:0 0 12px 0; padding:12px 14px; border:2px solid #8c52dc; "
+                "border-radius:8px; background:#f3eeff;\">"
+                "<b>✍ Entrada visual de fórmulas (recomendada)</b><br>"
+                "Hacé clic en el botón <b>«Entrada visual»</b> a la derecha de cualquier cuadro de "
+                "entrada para abrir, en la <b>parte inferior</b> de la ventana principal, un "
+                "<b>panel editor de fórmulas</b> (como un teclado virtual):<br>"
+                "① Armá la fórmula de forma visual en el editor de arriba (fracciones, raíces, "
+                "sub/superíndices, matrices, etc. a un clic);<br>"
+                "② El panel muestra una <b>vista previa de LaTeX en vivo</b>;<br>"
+                "③ Hacé clic en <b>«Insertar fórmula»</b> abajo a la derecha; el resultado se "
+                "escribe en el cuadro de entrada y el panel se cierra.<br>"
+                "No hace falta memorizar LaTeX para ingresar expresiones complejas.</div>"
+                "<p>Todos los cuadros de texto admiten sintaxis estándar de Python / SymPy:</p>"
+                "<ul>"
+                "<li>Suma/resta/mult/div: <code>+</code> <code>-</code> <code>*</code> <code>/</code></li>"
+                "<li>Potencia: <code>x**2</code>; raíz: <code>sqrt(x)</code>; logaritmo: <code>log(x)</code></li>"
+                "<li>Constantes: <code>pi</code>, <code>e</code>, <code>oo</code> (infinito); "
+                "imaginario: <code>I</code></li>"
+                "</ul>"
+                "<p>También podés ingresar <b>LaTeX directamente</b>: antepené a la expresión un "
+                "signo de dólar de ancho medio <code>$</code>, por ejemplo <code>$\\frac{x}{2}</code>, "
+                "<code>$x^{2}</code>, <code>$\\sin{x}</code>.</p>"
+            ),
         },
     },
     {
         "title": {
             "zh": "计算选项卡与计算引擎",
             "en": "Calculation Tab & Engines",
+            "es": "Pestaña de cálculo y motores",
         },
         "html": {
             "zh": (
@@ -131,12 +175,22 @@ _GUIDE_STEPS = [
                 "<li><b>LaTeX generator</b>: produces LaTeX code from a Python expression.</li>"
                 "</ul>"
             ),
+            "es": (
+                "<p>La pestaña «Calcular» ofrece cuatro motores:</p>"
+                "<ul>"
+                "<li><b>Motor incorporado de Python</b>: cálculo numérico rápido, texto plano.</li>"
+                "<li><b>Mpmath de alta precisión</b>: precisión decimal configurable.</li>"
+                "<li><b>SymPy simbólico</b>: cálculo simbólico, resultados en LaTeX y texto.</li>"
+                "<li><b>Generador de LaTeX</b>: produce código LaTeX a partir de una expresión de Python.</li>"
+                "</ul>"
+            ),
         },
     },
     {
         "title": {
             "zh": "定义函数",
             "en": "Define Functions",
+            "es": "Definir funciones",
         },
         "html": {
             "zh": (
@@ -158,12 +212,23 @@ _GUIDE_STEPS = [
                 "</ul>"
                 "<p>Domain, monotonicity and parity analysis all rely on defined functions.</p>"
             ),
+            "es": (
+                "<p>En la página «Definir» podés definir funciones propias (se guardan en el diccionario <code>fs</code>).</p>"
+                "<p>Una vez definidas, usá la función en la mayoría de los cuadros de entrada:</p>"
+                "<ul>"
+                "<li>Como símbolo: con <code>g(x)=x**2</code>, ingresá <code>g+1/g</code>.</li>"
+                "<li>Por llamada: <code>f(3)</code> se evalúa solo; se admite anidar como "
+                "<code>f(g(2))</code>.</li>"
+                "</ul>"
+                "<p>El análisis de dominio, monotonía y paridad se basa en las funciones definidas.</p>"
+            ),
         },
     },
     {
         "title": {
             "zh": "微积分与微分方程",
             "en": "Calculus & Differential Equations",
+            "es": "Cálculo y ecuaciones diferenciales",
         },
         "html": {
             "zh": (
@@ -189,12 +254,25 @@ _GUIDE_STEPS = [
                 "<p>Example: LHS <code>f(x).diff(x)</code>, RHS <code>f(x)+1</code> solves "
                 "<code>f'(x)=f(x)+1</code>.</p>"
             ),
+            "es": (
+                "<p>En las pestañas correspondientes podés:</p>"
+                "<ul>"
+                "<li><b>Derivar</b>: derivada de una función o expresión.</li>"
+                "<li><b>Integrar</b>: indefinida/definida; los radicales en el denominador se "
+                "racionalizan automáticamente.</li>"
+                "<li><b>Ecuaciones diferenciales</b>: usá <code>f(x).diff(x)</code> para la "
+                "derivada; la incógnita queda fijada como <code>f(x)</code>.</li>"
+                "</ul>"
+                "<p>Ejemplo: lado izquierdo <code>f(x).diff(x)</code>, lado derecho <code>f(x)+1</code> "
+                "resuelve <code>f'(x)=f(x)+1</code>.</p>"
+            ),
         },
     },
     {
         "title": {
             "zh": "方程 / 不等式 / 解三角形",
             "en": "Equations / Inequalities / Triangles",
+            "es": "Ecuaciones / inecuaciones / triángulos",
         },
         "html": {
             "zh": (
@@ -214,12 +292,22 @@ _GUIDE_STEPS = [
                 "a/b/c); supports ASA, AAS, SAS, SSA, SSS; multiple solutions are labeled.</li>"
                 "</ul>"
             ),
+            "es": (
+                "<ul>"
+                "<li><b>Ecuación(es)</b>: resolución simbólica/numérica; el rango de la variable "
+                "principal se puede restringir con conjuntos.</li>"
+                "<li><b>Inecuación(es)</b>: los conjuntos solución se devuelven como conjuntos o intervalos.</li>"
+                "<li><b>Resolver triángulos</b>: ingresá 3 condiciones válidas (ángulo A/B/C o lado "
+                "a/b/c); admite ALA, AAL, LAL, LLA, LLL; las soluciones múltiples se etiquetan.</li>"
+                "</ul>"
+            ),
         },
     },
     {
         "title": {
             "zh": "绘图功能",
             "en": "Plotting",
+            "es": "Graficación",
         },
         "html": {
             "zh": (
@@ -242,12 +330,24 @@ _GUIDE_STEPS = [
                 "</ul>"
                 "<p>Plots are rendered by Matplotlib with clearly labeled axes.</p>"
             ),
+            "es": (
+                "<ul>"
+                "<li><b>Graficar función</b>: ingresá una expresión o elegí una función definida, "
+                "configurá el dominio y graficá; las discontinuidades se manejan automáticamente.</li>"
+                "<li><b>Gráfico en el plano</b>: visualizá objetos de geometría plana (puntos, rectas, "
+                "circunferencias, triángulos, polígonos).</li>"
+                "<li><b>Gráfico en el espacio</b>: visualización 3D de objetos de geometría del espacio, "
+                "con vista rotable.</li>"
+                "</ul>"
+                "<p>Los gráficos se renderizan con Matplotlib, con ejes claramente rotulados.</p>"
+            ),
         },
     },
     {
         "title": {
             "zh": "平面 / 立体几何",
             "en": "Plane / Solid Geometry",
+            "es": "Geometría plana / del espacio",
         },
         "html": {
             "zh": (
@@ -270,12 +370,24 @@ _GUIDE_STEPS = [
                 "</ul>"
                 "<p>Reference objects by name; parameters separated by half-width commas.</p>"
             ),
+            "es": (
+                "<p>Definí objetos en las páginas «Geometría plana / del espacio» y luego calculá en "
+                "las páginas «Calcular» correspondientes:</p>"
+                "<ul>"
+                "<li><b>Plano</b>: puntos, rectas, circunferencias, triángulos, polígonos (19 constructores); "
+                "32 operaciones como distancia, intersección, área, perímetro, baricentro.</li>"
+                "<li><b>Espacio</b>: puntos, rectas, planos y segmentos en 3D; 22 operaciones espaciales "
+                "incluido el volumen del tetraedro.</li>"
+                "</ul>"
+                "<p>Referenciá los objetos por nombre; separá los parámetros con comas de ancho medio.</p>"
+            ),
         },
     },
     {
         "title": {
             "zh": "向量",
             "en": "Vectors",
+            "es": "Vectores",
         },
         "html": {
             "zh": (
@@ -294,12 +406,22 @@ _GUIDE_STEPS = [
                 "find the angle.</li>"
                 "</ul>"
             ),
+            "es": (
+                "<p>En la página «Definir vector», definí vectores 2D (nombre, x/y) admitiendo "
+                "expresiones de SymPy.</p>"
+                "<ul>"
+                "<li><b>Propiedades</b>: expresión, módulo, ángulo de dirección, vector unitario.</li>"
+                "<li><b>Operaciones</b>: elegí dos vectores para sumar, restar, producto escalar o "
+                "hallar el ángulo.</li>"
+                "</ul>"
+            ),
         },
     },
     {
         "title": {
             "zh": "积木化功能（Blockly）",
             "en": "Blockly (Visual Blocks)",
+            "es": "Función Blockly (bloques visuales)",
         },
         "html": {
             "zh": (
@@ -323,12 +445,24 @@ _GUIDE_STEPS = [
                 "<li>Projects can be saved/loaded, governed by Settings → Save Options.</li>"
                 "</ul>"
             ),
+            "es": (
+                "<p>La página «Blockly» ofrece un editor visual: arrastrá y encajá bloques para armar "
+                "flujos de cálculo sin escribir código:</p>"
+                "<ul>"
+                "<li>Ingresá expresiones de SymPy en los bloques, o LaTeX con <code>$</code>.</li>"
+                "<li>Hacé clic en Ejecutar para correr en orden con resultados intermedios en vivo.</li>"
+                "<li>Las salidas se renderizan como LaTeX automáticamente.</li>"
+                "<li>Definí funciones, derivá/integrá, resolvé ecuaciones/inecuaciones/triángulos.</li>"
+                "<li>Los proyectos se pueden guardar/cargar, según Configuración → Opciones de guardado.</li>"
+                "</ul>"
+            ),
         },
     },
     {
         "title": {
             "zh": "效率工具：缓存 / 公式输入 / 设置",
             "en": "Productivity: Cache / Formula Input / Settings",
+            "es": "Herramientas: caché / entrada de fórmulas / configuración",
         },
         "html": {
             "zh": (
@@ -351,12 +485,24 @@ _GUIDE_STEPS = [
                 "<p>Settings are stored as JSON in the Qt config directory (with <code>language</code>, "
                 "<code>theme</code>, …).</p>"
             ),
+            "es": (
+                "<ul>"
+                "<li><b>Caché</b>: doble clic en un elemento para copiarlo; los botones del cuadro de entrada guardan/recuperan de la caché.</li>"
+                "<li><b>Entrada visual de fórmulas</b>: hacé clic en el ícono de teclado para insertar "
+                "símbolos matemáticos de forma gráfica (basado en MathLive).</li>"
+                "<li><b>Configuración</b>: ajustá idioma, tema y las opciones de guardado detalladas.</li>"
+                "<li><b>Guardar/Abrir</b>: usá Archivo → Guardar/Abrir para conservar el espacio de trabajo (tema e idioma incluidos).</li>"
+                "</ul>"
+                "<p>La configuración se guarda como JSON en el directorio de configuración de Qt (con <code>language</code>, "
+                "<code>theme</code>, …).</p>"
+            ),
         },
     },
     {
         "title": {
             "zh": "帮助与完成",
             "en": "Help & Finish",
+            "es": "Ayuda y finalización",
         },
         "html": {
             "zh": (
@@ -377,6 +523,15 @@ _GUIDE_STEPS = [
                 "</ul>"
                 "<p>Thanks for using CalculusCalculator. Happy calculating!</p>"
             ),
+            "es": (
+                "<p>¡Completaste la guía de inicio!</p>"
+                "<ul>"
+                "<li>Reabrí esta guía cuando quieras desde <b>Acerca de → Guía</b>.</li>"
+                "<li>Abrí la ayuda completa desde <b>Acerca de → Ayuda</b> (o el menú Acerca de).</li>"
+                "<li>Ante dudas, consultá la documentación oficial de Python / SymPy / Mpmath.</li>"
+                "</ul>"
+                "<p>¡Gracias por usar CalculusCalculator; que disfrutes calculando!</p>"
+            ),
         },
     },
 ]
@@ -389,29 +544,40 @@ _GUIDE_EXERCISES = {
     1: {
         "zh": "动手试试：在下方输入一个 SymPy 表达式（例如 x**2+2*x+1），输入后按回车检查是否合法。",
         "en": "Try it: type a SymPy expression below (e.g. x**2+2*x+1), then press Enter to check it.",
+        "es": "Probá: escribí abajo una expresión de SymPy (por ejemplo x**2+2*x+1) y presioná Enter para verificarla.",
     },
 }
 
-# 第 1 步“语言与主题”设置页标题（双语）。
+# 第 1 步设置页标题（多语言）。应用为西班牙语单语，因此此页仅配置主题。
 _SETTINGS_STEP_TITLE = {
-    "zh": "语言与主题",
-    "en": "Language & Theme",
+    "zh": "主题",
+    "en": "Theme",
+    "es": "Tema",
 }
 
-# 设置页内固定双语标签：语言选项无论当前语言始终以“中文 (Chinese)”形式显示。
-# 这些标签固定双语，切换语言时无需重新翻译。
+# 设置页内固定标签（多语言）。
+# 应用为西班牙语单语（见 core.settings，apply_language 固定 es_ES），
+# 因此不再提供语言选择，仅保留主题选项与一行语言说明。
 _SETUP_LABELS = {
-    "lang": "语言 (Language)",
-    "theme": "主题 (Theme)",
-    "light": "浅色 (Light)",
-    "dark": "深色 (Dark)",
+    "lang_note": {
+        "zh": "应用界面为西班牙语。",
+        "en": "The application interface is in Spanish.",
+        "es": "La aplicación está en español.",
+    },
+    "theme": {"zh": "主题 (Theme)", "en": "Theme", "es": "Tema"},
+    "light": {"zh": "浅色 (Light)", "en": "Light", "es": "Claro"},
+    "dark": {"zh": "深色 (Dark)", "en": "Dark", "es": "Oscuro"},
 }
 
 
 def _guide_text(d):
-    """按当前语言从双语字典取文本，回退到中文。"""
+    """按当前语言从多语言字典取文本（es / en / zh），回退到中文。"""
     lang = (current_language() or "").lower()
-    return d.get("en" if lang.startswith("en") else "zh", d["zh"])
+    if lang.startswith("es"):
+        return d.get("es", d["zh"])
+    if lang.startswith("en"):
+        return d.get("en", d["zh"])
+    return d["zh"]
 
 
 class GuideDialog(QDialog):
@@ -428,6 +594,7 @@ class GuideDialog(QDialog):
         self.setWindowTitle(_guide_text({
             "zh": "初始化引导",
             "en": "Getting Started",
+            "es": "Guía de inicio",
         }))
         self.setMinimumSize(640, 560)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
@@ -485,16 +652,16 @@ class GuideDialog(QDialog):
         bottom.addStretch(1)
 
         self._btn_skip = QPushButton(_guide_text({
-            "zh": "跳过引导", "en": "Skip",
+            "zh": "跳过引导", "en": "Skip", "es": "Saltar",
         }))
         self._btn_back = QPushButton(_guide_text({
-            "zh": "上一步", "en": "Back",
+            "zh": "上一步", "en": "Back", "es": "Atrás",
         }))
         self._btn_next = QPushButton(_guide_text({
-            "zh": "下一步", "en": "Next",
+            "zh": "下一步", "en": "Next", "es": "Siguiente",
         }))
         self._btn_finish = QPushButton(_guide_text({
-            "zh": "完成", "en": "Finish",
+            "zh": "完成", "en": "Finish", "es": "Finalizar",
         }))
 
         self._btn_skip.clicked.connect(self._on_skip)
@@ -509,34 +676,29 @@ class GuideDialog(QDialog):
         root.addLayout(bottom)
 
     def _build_setup_page(self, page):
-        """构建“语言与主题”设置页。语言选项始终以“中文 (Chinese)”形式显示。"""
+        """构建设置页：应用为西班牙语单语，仅配置主题，并显示一行语言说明。"""
         layout = QVBoxLayout(page)
         layout.setContentsMargins(6, 6, 6, 6)
         layout.setSpacing(12)
 
-        lang_hint = QLabel(_SETUP_LABELS["lang"])
-        lang_hint.setObjectName("guideSubTitle")
-        layout.addWidget(lang_hint)
+        # 语言说明（应用固定西班牙语，不提供语言切换）
+        lang_note = QLabel(_guide_text(_SETUP_LABELS["lang_note"]))
+        lang_note.setObjectName("guideSubTitle")
+        lang_note.setWordWrap(True)
+        layout.addWidget(lang_note)
+        self._lang_note = lang_note
 
-        # 语言选项：无论当前语言，均固定以“中文 (English)”形式显示
-        self._lang_group = QButtonGroup(self)
-        self._lang_group.setExclusive(True)
-        self._lang_zh = QRadioButton("中文 (Chinese)")
-        self._lang_en = QRadioButton("英文 (English)")
-        self._lang_group.addButton(self._lang_zh)
-        self._lang_group.addButton(self._lang_en)
-        layout.addWidget(self._lang_zh)
-        layout.addWidget(self._lang_en)
-
-        theme_hint = QLabel(_SETUP_LABELS["theme"])
+        theme_hint = QLabel(_guide_text(_SETUP_LABELS["theme"]))
         theme_hint.setObjectName("guideSubTitle")
         layout.addWidget(theme_hint)
+        self._theme_hint = theme_hint
+        self._setup_label_refs = [(self._lang_note, "lang_note"), (self._theme_hint, "theme")]
 
-        # 主题选项单独成组，与语言组互不干扰（否则四个单选会互斥只能选一个）
+        # 主题选项
         self._theme_group = QButtonGroup(self)
         self._theme_group.setExclusive(True)
-        self._theme_light = QRadioButton(_SETUP_LABELS["light"])
-        self._theme_dark = QRadioButton(_SETUP_LABELS["dark"])
+        self._theme_light = QRadioButton(_guide_text(_SETUP_LABELS["light"]))
+        self._theme_dark = QRadioButton(_guide_text(_SETUP_LABELS["dark"]))
         self._theme_group.addButton(self._theme_light)
         self._theme_group.addButton(self._theme_dark)
         layout.addWidget(self._theme_light)
@@ -545,13 +707,9 @@ class GuideDialog(QDialog):
         layout.addStretch(1)
 
         # 初始勾选（连接信号前设置，避免触发回调）
-        self._lang_zh.setChecked(current_language() != "en_US")
-        self._lang_en.setChecked(current_language() == "en_US")
         self._theme_light.setChecked(current_theme() != "dark")
         self._theme_dark.setChecked(current_theme() == "dark")
 
-        self._lang_zh.toggled.connect(lambda c: self._on_lang_pick("zh_CN", c))
-        self._lang_en.toggled.connect(lambda c: self._on_lang_pick("en_US", c))
         self._theme_light.toggled.connect(lambda c: self._on_theme_pick("light", c))
         self._theme_dark.toggled.connect(lambda c: self._on_theme_pick("dark", c))
 
@@ -595,18 +753,7 @@ class GuideDialog(QDialog):
 
         root.addWidget(self._exercise_box)
 
-    # ---------------------------------------------------------- lang/theme
-    def _on_lang_pick(self, lang, checked):
-        """语言选择即时应用：仅当选中（checked=True）且与当前不同才处理。"""
-        if not checked:
-            return
-        if lang == (current_language() or "zh_CN"):
-            return
-        if callable(self._apply_lang):
-            self._apply_lang(lang)
-        # 重新渲染当前步骤：标题/正文/进度/按钮均按新语言刷新
-        self._show_step(self._idx)
-
+    # ---------------------------------------------------------------- theme
     def _on_theme_pick(self, theme, checked):
         """主题选择即时应用。"""
         if not checked:
@@ -666,6 +813,7 @@ class GuideDialog(QDialog):
         self.setWindowTitle(_guide_text({
             "zh": "初始化引导",
             "en": "Getting Started",
+            "es": "Guía de inicio",
         }))
 
         if idx == 0:
@@ -688,13 +836,14 @@ class GuideDialog(QDialog):
         self._progress.setFormat(_guide_text({
             "zh": "第 %v / %m 步",
             "en": "Step %v / %m",
+            "es": "Paso %v / %m",
         }))
 
         # 按钮文案随语言刷新（切换语言后即时更新）
-        self._btn_skip.setText(_guide_text({"zh": "跳过引导", "en": "Skip"}))
-        self._btn_back.setText(_guide_text({"zh": "上一步", "en": "Back"}))
-        self._btn_next.setText(_guide_text({"zh": "下一步", "en": "Next"}))
-        self._btn_finish.setText(_guide_text({"zh": "完成", "en": "Finish"}))
+        self._btn_skip.setText(_guide_text({"zh": "跳过引导", "en": "Skip", "es": "Saltar"}))
+        self._btn_back.setText(_guide_text({"zh": "上一步", "en": "Back", "es": "Atrás"}))
+        self._btn_next.setText(_guide_text({"zh": "下一步", "en": "Next", "es": "Siguiente"}))
+        self._btn_finish.setText(_guide_text({"zh": "完成", "en": "Finish", "es": "Finalizar"}))
 
         self._btn_back.setEnabled(idx > 0)
         last = idx == total - 1
@@ -713,7 +862,7 @@ class GuideDialog(QDialog):
         self._exercise_hint.setText(_guide_text(ex))
         self._exercise_input.clear()
         self._exercise_feedback.setText("")
-        self._btn_ex_check.setText(_guide_text({"zh": "检查", "en": "Check"}))
+        self._btn_ex_check.setText(_guide_text({"zh": "检查", "en": "Check", "es": "Comprobar"}))
 
     def _on_exercise_check(self):
         """检查“动手试试”中输入的 SymPy 表达式是否合法。"""
@@ -722,6 +871,7 @@ class GuideDialog(QDialog):
             self._exercise_feedback.setText(_guide_text({
                 "zh": "请先输入一个表达式。",
                 "en": "Please type an expression first.",
+                "es": "Primero ingresá una expresión.",
             }))
             self._set_exercise_feedback("err")
             return
@@ -730,12 +880,14 @@ class GuideDialog(QDialog):
             self._exercise_feedback.setText(_guide_text({
                 "zh": "✓ 表达式合法！",
                 "en": "✓ Valid expression!",
+                "es": "✓ ¡Expresión válida!",
             }))
             self._set_exercise_feedback("ok")
         except SympifyError:
             self._exercise_feedback.setText(_guide_text({
                 "zh": "✗ 表达式无法解析，请检查语法（例如用 x**2 而非 x^2）。",
                 "en": "✗ Could not parse. Check the syntax (e.g. x**2, not x^2).",
+                "es": "✗ No se pudo interpretar. Revisá la sintaxis (por ejemplo x**2, no x^2).",
             }))
             self._set_exercise_feedback("err")
 
