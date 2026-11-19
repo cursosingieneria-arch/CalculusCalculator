@@ -11,9 +11,12 @@ import json
 
 from PySide6.QtCore import QTranslator, QCoreApplication
 
-# 当前已安装的翻译器（单例）；None 表示使用源语言（zh_CN）
+# Idioma único de la aplicación: español. Antes alternaba chino (fuente) e inglés;
+# ahora se fija es_ES y se retira la selección de idioma.
+DEFAULT_LANGUAGE = "es_ES"
+# 当前已安装的翻译器（单例）
 _translator = None
-_current = "zh_CN"
+_current = DEFAULT_LANGUAGE
 # 当前主题：'light' / 'dark'，默认浅色
 _theme = "light"
 
@@ -105,7 +108,8 @@ def apply_language(lang):
     其它值（如 'en_US'）时加载对应 .qm 并安装。
     """
     global _translator, _current
-    _current = lang or "zh_CN"
+    # Aplicación en español únicamente: se ignora cualquier otro idioma solicitado.
+    _current = DEFAULT_LANGUAGE
 
     app = QCoreApplication.instance()
     if app is None:
@@ -131,8 +135,8 @@ def apply_language(lang):
 
 
 def load_saved_language():
-    """从持久化文件读取上次选择的语言，默认 'zh_CN'。"""
-    return _read_settings().get("language", "zh_CN")
+    """La aplicación es solo en español; se ignora cualquier idioma persistido."""
+    return DEFAULT_LANGUAGE
 
 
 def save_language(lang):

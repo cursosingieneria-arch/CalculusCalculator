@@ -1,7 +1,7 @@
 from ui.ui_shezhi import *
 from PySide6.QtWidgets import QWidget, QMessageBox
 from PySide6.QtCore import Qt
-from core.settings import current_language, current_theme, clear_settings_file
+from core.settings import current_theme, clear_settings_file
 
 
 class Shezhi(QWidget, Ui_shezhi):
@@ -10,11 +10,9 @@ class Shezhi(QWidget, Ui_shezhi):
         del fs  # 设置页不直接使用共享 fs
         self.setupUi(self)
         self.parent = parent
-        # 根据当前语言预选单选按钮，避免每次打开都回到默认
-        if current_language() == "en_US":
-            self.shezhi_yingwen.setChecked(True)
-        else:
-            self.shezhi_zhongwen.setChecked(True)
+        # Aplicación en español únicamente: se oculta el selector de idioma.
+        if hasattr(self, "groupBox_2"):
+            self.groupBox_2.hide()
         # 根据当前主题预选单选按钮（默认浅色）
         if current_theme() == "dark":
             self.shezhi_shense.setChecked(True)
@@ -43,8 +41,8 @@ class Shezhi(QWidget, Ui_shezhi):
                 self.shezhi_cundang.item(idx).setCheckState(Qt.Checked)
 
     def on_apply(self):
-        # 语言切换
-        lang = "en_US" if self.shezhi_yingwen.isChecked() else "zh_CN"
+        # Idioma fijo en español (ya no hay selección de idioma).
+        lang = "es_ES"
         # 主题切换
         theme = "dark" if self.shezhi_shense.isChecked() else "light"
         if self.parent is not None:
@@ -79,28 +77,26 @@ class Shezhi(QWidget, Ui_shezhi):
         }
 
     def on_clear_settings(self):
-        """清除设置文件：先警告，再二次确认；确认后删除文件并恢复默认界面。"""
-        _t = lambda zh, en: en if (current_language() or "").startswith("en") else zh
+        """Borra el archivo de configuración: avisa, confirma dos veces y restaura
+        los valores por defecto."""
 
-        # 第一次：破坏性操作警告
+        # Primera: advertencia de operación destructiva
         first = QMessageBox.warning(
             self,
-            _t("清除设置文件", "Clear Settings File"),
-            _t("此操作将删除设置文件（语言、主题、存档过滤等所有偏好），且无法撤销。\n确定要继续吗？",
-               "This deletes the settings file (language, theme, save filters and all "
-               "preferences). This cannot be undone.\nDo you want to continue?"),
+            "Borrar archivo de configuración",
+            "Esta operación elimina el archivo de configuración (idioma, tema, filtros "
+            "de guardado y todas las preferencias) y no se puede deshacer.\n¿Desea continuar?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
         if first != QMessageBox.StandardButton.Yes:
             return
 
-        # 第二次：二次确认
+        # Segunda: confirmación adicional
         second = QMessageBox.question(
             self,
-            _t("二次确认", "Confirm Again"),
-            _t("再次确认：真的要清除所有设置并恢复默认吗？",
-               "Confirm again: really clear all settings and restore defaults?"),
+            "Confirmar de nuevo",
+            "Confirme de nuevo: ¿realmente desea borrar toda la configuración y restaurar los valores por defecto?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
@@ -109,20 +105,18 @@ class Shezhi(QWidget, Ui_shezhi):
 
         # 先应用默认界面（语言 + 主题），这会因保存而重新写入设置文件
         if self.parent is not None and hasattr(self.parent, "change_language"):
-            self.parent.change_language("zh_CN")
+            self.parent.change_language("es_ES")  # idioma único: español
             self.parent.light()
         # 删除刚写入的设置文件，达到“清除”效果
         clear_settings_file()
 
-        # 同步本页单选按钮到默认（中文 / 浅色）
-        self.shezhi_zhongwen.setChecked(True)
-        self.shezhi_yingwen.setChecked(False)
+        # Sincroniza los botones de esta página con los valores por defecto (tema claro)
         self.shezhi_shense.setChecked(False)
         self.shezhi_qianse.setChecked(True)
 
         QMessageBox.information(
             self,
-            _t("完成", "Done"),
-            _t("设置文件已清除，已恢复默认（重新启动程序以完全生效）。",
-               "Settings cleared; defaults restored (restart the app to take full effect)."),
+            "Listo",
+            "Se borró el archivo de configuración y se restauraron los valores por "
+            "defecto (reinicie el programa para que surta pleno efecto).",
         )
