@@ -10,7 +10,7 @@ from cx_Freeze import setup, Executable
 # 冻结后各模块位于 <exe>/lib/，于是 `os.path.join(dirname(__file__), '..', X)`
 # 解析到 <exe>/lib/X。
 
-# i18n/*.qm：由 core/settings.py、ui/i18n.py 定位，两级回退
+# i18n/*.qm：由 core/settings.py 定位，两级回退
 #   冻结后 lib/i18n → <exe>/i18n，故放在可执行文件同级
 I18N_FILES = [("i18n", "i18n")]
 

@@ -64,7 +64,9 @@ def period(f, s, d, arg, fs):
             return -p if p is not None else "该函数无周期"
         else:
             return "该函数无周期"
-    except:
+    except Exception:
+        # Fallback de cálculo: si el análisis del dominio falla, se asume sin
+        # periodo. Se acota a Exception para no capturar KeyboardInterrupt/SystemExit.
         return "该函数无周期"
 
 def mvalues(f, s, d, is_max, fs):
