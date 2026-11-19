@@ -1,9 +1,15 @@
-﻿import re
+﻿import logging
+import re
 from sympy import sympify as sympify_sympy
 from sympy import Symbol, simplify, radsimp, Basic as SympyBasic
 from sympy.core.sympify import SympifyError
 from latex2sympy2_extended import latex2sympy
-from PySide6.QtWidgets import QMessageBox
+
+# Núcleo desacoplado de la GUI: este módulo ya no importa Qt (antes importaba
+# QMessageBox sin usarlo), por lo que puede usarse y probarse sin entorno
+# gráfico. Los errores se registran y se devuelven como texto; es el llamador
+# (la GUI) quien decide cómo mostrarlos.
+logger = logging.getLogger(__name__)
 
 def _preprocess_func_calls(expr_str, fs):
     """预处理函数调用表达式，将 f(arg) 形式替换为函数体表达式
@@ -80,7 +86,8 @@ def sympify(expr, fs, locals = None, is_simplify = False, is_rationalize = False
             try:
                 expr = _preprocess_func_calls(expr, fs)
                 expr = sympify_sympy(expr)
-            except:
+            except Exception:
+                logger.debug("sympify: no se pudo interpretar %r", expr, exc_info=True)
                 return "不规范的表达式输入"
     else:
         expr = _preprocess_func_calls(expr, fs)

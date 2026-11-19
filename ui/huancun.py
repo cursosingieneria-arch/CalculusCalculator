@@ -51,7 +51,7 @@ def open_cache(parent):
     # 双击任意缓存项 → 填入输入框并关闭对话框
     def on_double_click(item):
         try:  parent.setText(item.text())
-        except:  pass
+        except Exception:  pass  # el control destino puede no aceptar texto; se ignora
         dialog.accept()
     cache_widget.huancunqu.itemDoubleClicked.connect(on_double_click)
 
